@@ -8,7 +8,7 @@ import re
 OPENAI_API_KEY = "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"
 client = OpenAI(api_key=OPENAI_API_KEY,)
 
-OUTPUT_FOLDER = "samples_pretraining"
+OUTPUT_FOLDER = "samples"
 
 PROMPT = "Write a short story (3-5 paragraphs) which only uses very simple words\
             that a 3 year old child would likely understand. The story should use\
@@ -77,7 +77,6 @@ def generate(N, output_folder, sample_mode=False, create_instruct=False):
     if sample_mode:
         N = N // 100
     
-
     for sample_num in range(N):
         verb = random.choice(verbs)
         noun = random.choice(nouns)
@@ -87,17 +86,9 @@ def generate(N, output_folder, sample_mode=False, create_instruct=False):
         format_prompt = PROMPT.format(verb, noun, adjective, feature)
         
         file = output_folder + "/" + str(sample_num)
-
+        print(file)
         output = _gen_pretraining(format_prompt, file)
         _gen_instruct(output, file, dict(words = ", ".join(verb, noun, adjective), features=feature))
-       
-        
-        # generate instruct variants
-        #
-        #
-        #with open(output_folder + "/" + str(sample_num) + "instruct.txt", "w+") as o:
-        #    for inst in chosen_instructions:
-            
 
 if __name__ == "__main__":
     GEN_SIZE = 1000
