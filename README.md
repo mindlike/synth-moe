@@ -4,23 +4,31 @@ This repository is a simple combinations of Andrej Karpathy's nanoGPT (https://g
 
 
 ## Repository Structure
-moe
- ├── config
- ├── data
- │    └── shakespeare_char
- ├── model
- │   ├── Gates
- │   │    ├── distributed.py
- │   │    └── stmoe.py
- │   ├── MLPExpert.py
- │   └── model.py
- ├── out
- ├── train.py
- └──requirements.txt
-synth
- ├── features
- ├── samples
- └──synthesize_data.py
+├── README.md
+├── moe
+│   ├── config
+│   │   ├── config.json
+│   │   ├── configurator.py
+│   │   └── train_shakespeare_char.py
+│   ├── data
+│   │   └── shakespeare_char
+│   ├── model
+│   │   ├── Gates
+│   │   │   ├── distributed.py
+│   │   │   └── stmoe.py
+│   │   ├── MLPExpert.py
+│   │   └── model.py
+│   ├── out
+│   └── train.py
+├── requirements.txt
+└── synth
+    ├── features
+    │   ├── adjectives
+    │   ├── features
+    │   ├── nouns
+    │   └── verbs
+    ├── samples
+    └── synthesize_data.py
 
  ## Running a model
  All training is done using the train.py script. 
