@@ -4,6 +4,7 @@ This repository is a simple combinations of Andrej Karpathy's nanoGPT (https://g
 
 
 ## Repository Structure
+```bash 
 ├── README.md
 ├── moe
 │   ├── config
@@ -29,7 +30,7 @@ This repository is a simple combinations of Andrej Karpathy's nanoGPT (https://g
     │   └── verbs
     ├── samples
     └── synthesize_data.py
-
+```
  ## Running a model
  All training is done using the train.py script. 
 Install requirements:
