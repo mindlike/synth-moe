@@ -3,6 +3,7 @@
 import random
 from openai import OpenAI
 import json
+import re
 
 OPENAI_API_KEY = "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"
 client = OpenAI(api_key=OPENAI_API_KEY,)
@@ -19,6 +20,33 @@ verbs   = [n.strip() for n in open("features/verbs").readlines()]
 adjectives = [n.strip() for n in open("features/adjectives").readlines()]
 features = [n.strip() for n in open("features/features").readlines()]
 
+import re
+
+def _split_and_select_random_sentence(story):
+    # Splitting the story into sentences using regular expressions to account for ".", "?", "!"
+    sentences = re.split(r'(?<=[.!?]) +', story)
+
+    # Removing the first sentence if there are multiple sentences
+    if len(sentences) > 1:
+        sentences.pop(0)
+
+    # Selecting a random sentence
+    random_sentence = random.choice(sentences) if sentences else ""
+
+    return random_sentence
+
+def _gen_summary(story):
+    prompt = "Write a short summary of the following story (1 paragraph) which only uses very simple words\
+            that a 3 year old child would likely understand. Story: \"{0}\""
+
+    completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+                {"role": "user", "content": prompt.format(story)}
+            ]
+    )
+    return completion
+
 def _gen_pretraining(format_prompt, file):
     completion = client.chat.completions.create(
             model="gpt-3.5-turbo",
@@ -28,8 +56,22 @@ def _gen_pretraining(format_prompt, file):
         )
 
     open(file + "_pretrain.txt", "w+").write(completion.choices[0].message.content)
+    return completion.choices[0].message.content
 
-def _gen_instruct(story, features):
+def _gen_instruct(story, file, elements):
+    instructions = ["contain_words", "summary", "features", "contain_sentence"]
+    chosen_instructions = random.sample(instructions, 2)
+    with open(file + "_instruct.txt", "w+") as o:
+        for inst in chosen_instructions:
+            if inst == "contain_words":
+                o.write("Words:", elements["words"])
+            elif inst == "summary":
+                o.write("Summary:", _gen_summary(story))
+            elif inst == "features":
+                o.write("Features:", elements["features"])
+            elif inst == "contain_sentence":
+                o.write("Sentence:", _split_and_select_random_sentence(story))
+        o.write("Story:", story)
 
 def generate(N, output_folder, sample_mode=False, create_instruct=False):
     if sample_mode:
@@ -45,13 +87,14 @@ def generate(N, output_folder, sample_mode=False, create_instruct=False):
         format_prompt = PROMPT.format(verb, noun, adjective, feature)
         
         file = output_folder + "/" + str(sample_num)
-        _gen_pretraining(format_prompt, file)
 
+        output = _gen_pretraining(format_prompt, file)
+        _gen_instruct(output, file, dict(words = ", ".join(verb, noun, adjective), features=feature))
        
         
         # generate instruct variants
-        #instructions = ["contain words", "summary", "features", "contain_sentence"]
-        #chosen_instructions = random.sample(instructions, 2)
+        #
+        #
         #with open(output_folder + "/" + str(sample_num) + "instruct.txt", "w+") as o:
         #    for inst in chosen_instructions:
             
