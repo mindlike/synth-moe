@@ -5,7 +5,7 @@ from openai import OpenAI
 import json
 import re
 
-OPENAI_API_KEY = "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"
+OPENAI_API_KEY = "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"
 client = OpenAI(api_key=OPENAI_API_KEY,)
 
 OUTPUT_FOLDER = "samples"
@@ -45,7 +45,7 @@ def _gen_summary(story):
                 {"role": "user", "content": prompt.format(story)}
             ]
     )
-    return completion
+    return completion.choices[0].message.content
 
 def _gen_pretraining(format_prompt, file):
     completion = client.chat.completions.create(
@@ -64,14 +64,14 @@ def _gen_instruct(story, file, elements):
     with open(file + "_instruct.txt", "w+") as o:
         for inst in chosen_instructions:
             if inst == "contain_words":
-                o.write("Words:", elements["words"])
+                o.write("Words: " + elements["words"] + "\n")
             elif inst == "summary":
-                o.write("Summary:", _gen_summary(story))
+                o.write("Summary: " + _gen_summary(story) + "\n")
             elif inst == "features":
-                o.write("Features:", elements["features"])
+                o.write("Features: " + elements["features"]  + "\n")
             elif inst == "contain_sentence":
-                o.write("Sentence:", _split_and_select_random_sentence(story))
-        o.write("Story:", story)
+                o.write("Sentence: " + _split_and_select_random_sentence(story) + "\n")
+        o.write("Story: " + story)
 
 def generate(N, output_folder, sample_mode=False, create_instruct=False):
     if sample_mode:
@@ -88,7 +88,7 @@ def generate(N, output_folder, sample_mode=False, create_instruct=False):
         file = output_folder + "/" + str(sample_num)
         print(file)
         output = _gen_pretraining(format_prompt, file)
-        _gen_instruct(output, file, dict(words = ", ".join(verb, noun, adjective), features=feature))
+        _gen_instruct(output, file, dict(words = ", ".join([verb, noun, adjective]), features=feature))
 
 if __name__ == "__main__":
     GEN_SIZE = 1000
