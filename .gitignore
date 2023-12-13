@@ -1,1 +1,22 @@
+# git ignore for python and pytorch
+out-shakespeare-char/*
+*/__pycache__/*
+*/.ipynb_checkpoints/*
+*/gate.cpython-38.pyc
+*/.pytest_cache/*
+*/.vscode/*
+*/.mypy_cache/*
+*/.git/*
+*/.gitignore
+*/.DS_Store
+*/**.cpython-38.pyc
+*/**.cpython-310.pyc
+*/**.cpython-311.pyc
+*/.python-version
+.DS_Store
+**.cpython-38.pyc
+**.cpython-310.pyc
+**.cpython-311.pyc
+.python-version
+/wandb
 env/
