@@ -5,7 +5,7 @@ from openai import OpenAI
 import json
 import re
 
-OPENAI_API_KEY = "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"
+OPENAI_API_KEY = ""
 client = OpenAI(api_key=OPENAI_API_KEY,)
 
 OUTPUT_FOLDER = "samples"
